@@ -12,7 +12,7 @@ class Colors:
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+    GRAY = '\033[38;5;8m'
     RESET = '\033[0m'
 
 
@@ -601,7 +601,16 @@ if __name__ == '__main__':
     main_class = I.ask('Enter the name of your main class.', StringUtils.create_java_class_name(name))
     load_at_startup = I.ask_bool('Do you want your plugin to be loaded at startup? '
                                  'Required if you plan to alter the map generation.', False)
-    zlib = I.ask_bool('Do you plan to use zLib?', True)
+
+    print(Colors.GRAY)
+    print('We, the authors of this bootstrap script, also wrote a pretty-complete development library called zLib\n'
+          '(because we are the zDevelopers), with lots of features to make development easier, like descent commands\n'
+          'managements, great tools to create beautiful GUIs and scoreboards with no effort, internationalization\n'
+          'support, and many many other big and small tools.\n')
+    print('Check it out at https://github.com/zDevelopers/zLib .')
+    print(Colors.RESET)
+
+    zlib = I.ask_bool('Do you want to use zLib? The generated code will use it instead of old Bukkit methods.', True)
 
     I.title('Git')
 
