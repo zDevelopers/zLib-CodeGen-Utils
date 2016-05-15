@@ -66,6 +66,137 @@ class StringUtils:
 
 
 class BukkitPluginGenerator:
+    GITIGNORE_TEMPLATE = '''# Created by the zLib plugin bootstrap generator
+# Inspired by https://www.gitignore.io/api/java,maven,intellij,eclipse,netbeans
+
+
+### Maven ###
+
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+
+### Intellij ###
+
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+## Folder-based project format
+.idea/
+
+## File-based project format
+*.iws
+
+## Plugin-specific files
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### Intellij Patch ###
+# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+
+# *.iml
+# modules.xml
+
+
+### Eclipse ###
+
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core
+.project
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
+.buildpath
+
+# sbteclipse plugin
+.target
+
+# Tern plugin
+.tern-project
+
+# TeXlipse plugin
+.texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+.nb-gradle/
+
+
+### Java ###
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+'''
+
     MAVEN_TEMPLATE = '''<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -237,7 +368,7 @@ public class {class_name} implements CommandExecutor, TabCompleter
 
     def __init__(self, folder: Path, name: str, package: str, main_class: str, version: str, author: str = None,
                  website: str = None, description: str = None, load_at_startup: bool = False, zlib: bool = True,
-                 java_version: str = '1.7', stdout=None, stderr=None):
+                 java_version: str = '1.7', gitignore: bool = True, stdout=None, stderr=None):
         self.folder = folder
 
         self.name = name
@@ -252,6 +383,8 @@ public class {class_name} implements CommandExecutor, TabCompleter
         self.zlib = zlib
 
         self.java_version = java_version
+
+        self.gitignore = gitignore
 
         self.listeners = []
         self.commands = []
@@ -274,6 +407,9 @@ public class {class_name} implements CommandExecutor, TabCompleter
         self.listeners.append(listener)
 
     def generate(self):
+        if self.gitignore:
+            self._save_file('.gitignore', self.GITIGNORE_TEMPLATE)
+
         self._save_file('pom.xml', self._generate_maven())
         self._save_file('plugin.yml', self._generate_plugin_yml(), self._folder_resources)
 
@@ -466,6 +602,10 @@ if __name__ == '__main__':
     load_at_startup = I.ask_bool('Do you want your plugin to be loaded at startup? '
                                  'Required if you plan to alter the map generation.', False)
     zlib = I.ask_bool('Do you plan to use zLib?', True)
+
+    I.title('Git')
+
+    gitignore = I.ask_bool('Do you want us to generate a .gitignore file?', True)
 
     I.title('Listeners generation')
 
