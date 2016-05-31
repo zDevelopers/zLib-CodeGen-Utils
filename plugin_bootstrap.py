@@ -93,6 +93,7 @@ buildNumber.properties
 
 ## File-based project format
 *.iws
+*.iml
 
 ## Plugin-specific files
 
