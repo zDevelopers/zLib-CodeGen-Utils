@@ -360,10 +360,10 @@ public class {class_name} implements CommandExecutor, TabCompleter
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args)
-    {
+    {{
         // TODO implement auto-completion for /{command_name}
         return null;
-    }
+    }}
 }}
 '''
 
